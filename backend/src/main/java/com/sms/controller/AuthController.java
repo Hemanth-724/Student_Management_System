@@ -36,6 +36,12 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    // ✅ HEALTH CHECK (Public)
+    @GetMapping("/health")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.ok("Backend is UP and Running! 🚀");
+    }
+
     // ✅ LOGIN
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody AuthRequest loginRequest) {
