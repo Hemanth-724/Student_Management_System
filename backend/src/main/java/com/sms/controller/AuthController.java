@@ -36,6 +36,12 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    // ✅ ROOT WELCOME (Public)
+    @GetMapping("/")
+    public ResponseEntity<String> welcome() {
+        return ResponseEntity.ok("Student Management System API is Live! 🚀");
+    }
+
     // ✅ LOGIN
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody AuthRequest loginRequest) {
@@ -51,13 +57,12 @@ public class AuthController {
 
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        // 🔥 FIX: safer extraction (avoid ClassCastException)
-        org.springframework.security.core.userdetails.User userDetails =
-                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        // ✅ FIXED: Cast to your custom User model
+        com.sms.model.User userDetails = (com.sms.model.User) authentication.getPrincipal();
 
         return ResponseEntity.ok(new JwtResponse(
                 jwt,
-                null, // you can add ID later if needed
+                userDetails.getId(), 
                 userDetails.getUsername(),
                 userDetails.getAuthorities().toString()
         ));

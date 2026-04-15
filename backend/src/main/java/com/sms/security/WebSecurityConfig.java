@@ -96,6 +96,7 @@ public class WebSecurityConfig {
             // ✅ AUTHORIZATION RULES (🔥 MAIN FIX)
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(
+                        "/",
                         "/api/auth/**"
                     ).permitAll() // 🔓 allow login/register without token
                     .anyRequest().authenticated() // 🔒 everything else secured
