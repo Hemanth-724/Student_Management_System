@@ -36,8 +36,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String path = request.getServletPath();
 
-            // 🔥 VERY IMPORTANT: Skip JWT for public endpoints
-            if (path.equals("/api/login") || path.equals("/api/register")) {
+            // 🔥 Skip JWT for auth endpoints
+            if (path.startsWith("/api/auth")) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -69,7 +69,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // ✅ Extract token from header
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 
