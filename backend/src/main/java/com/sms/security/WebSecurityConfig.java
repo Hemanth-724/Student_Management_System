@@ -57,18 +57,25 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
+            .csrf(csrf -> csrf.disable())
+
+            // ✅ FIXED CORS (important for frontend deployment)
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(List.of("http://localhost:5173"));
+                config.setAllowedOrigins(List.of("*")); // allow all origins
                 config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 config.setAllowedHeaders(List.of("*"));
                 return config;
             }))
+
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/api/auth/**").permitAll()
+
+            // ✅ FIXED AUTHORIZATION (MAIN ISSUE)
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/login", "/api/register").permitAll() // 🔥 VERY IMPORTANT
                     .anyRequest().authenticated()
             );
 
